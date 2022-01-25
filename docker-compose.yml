@@ -1,0 +1,25 @@
+version: "3"
+
+services:
+  localstack:
+    image: localstack/localstack:0.13.3
+    ports:
+      - 8080:8080
+      - 4566:4566
+    environment:
+      - DEFAULT_REGION=${DEFAULT_REGION}
+      - SERVICES=s3
+      - AWS_REGION=${DEFAULT_REGION}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+  glue:
+    build: .
+    volumes:
+    # スクリプトを共有するフォルダ
+    - ./share:/share
+    environment:
+      - AWS_DEFAULT_REGION=${DEFAULT_REGION}
+      - AWS_REGION=${DEFAULT_REGION}
+      # GlueからLocalstackを用いる際に、access_keyとsecret_keyが同じになっている必要がある
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
